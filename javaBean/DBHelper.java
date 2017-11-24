@@ -2,7 +2,6 @@ package com.acring.util;
 import com.acring.pojo.Student;
 import java.sql.*;
 
-
 public class DBHelper{
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	static final String DB_URL = "jdbc:mysql://localhost:3306/student";
@@ -21,7 +20,7 @@ public class DBHelper{
 
 			this.stmt = this.conn.createStatement();
 
-			String sql = "CREATE TABLE IF NOT EXISTS Student(" + 
+			String sql = "CREATE TABLE IF NOT EXISTS student(" + 
 						"id VARCHAR(25) not null, "+
 						"password VARCHAR(12) not null,"+
 						"name VARCHAR(25) not null,"+
@@ -37,17 +36,19 @@ public class DBHelper{
 
 	}
 
-	public void insertStudent(Student student){
+	public boolean insertStudent(Student student){
 		if(student == null){
 			System.out.println("student data is null!");
-			return ;
+			return false;
 		}
 
 		try{
 			String sql = String.format("insert into student (id, password, name)values ('%s','%s', '%s');", student.getId(), student.getPassword(), "xxx");
 			this.stmt.executeUpdate(sql);
+			return true;
 		}catch(Exception e){
 			e.printStackTrace();
+			return false;
 		}
 
 
@@ -81,6 +82,36 @@ public class DBHelper{
 		catch(Exception e){
 				e.printStackTrace();
 				return null;
+		}
+	}
+
+	public Student login(Student student){
+		try{
+			PreparedStatement pstmt = this.conn.prepareStatement("select * from student WHERE id = ? and password = ?");
+			pstmt.setString(1, student.getId());
+			pstmt.setString(2, student.getPassword());
+
+			ResultSet resultSet = pstmt.executeQuery();
+			if(resultSet.next()){
+				
+				String rid = resultSet.getString("id");
+				String password = resultSet.getString("password");
+				String name = resultSet.getString("name");
+
+				
+
+				student.setId(rid);
+				student.setPassword(password);
+				student.setName(name);
+
+				return student;				
+			}else{
+				return null;
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
 		}
 	}
 

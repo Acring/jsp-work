@@ -24,7 +24,7 @@
 	 	<div class="card-panel red lighten-2 center-align">学号不能为空</div>
 		</div>
 		<%
-		response.setHeader("refresh", "2; URL=login.htm");
+		response.setHeader("refresh", "2; URL=trylogin.jsp");
 		return;
 	}
 	else if(password == "" || password == null){
@@ -33,7 +33,7 @@
 	 	<div class="card-panel red lighten-2 center-align">密码不能为空</div>
 		</div>
 		<%
-		response.setHeader("refresh", "2; URL=login.htm");
+		response.setHeader("refresh", "2; URL=trylogin.jsp");
 		return;
 	}
 
@@ -49,14 +49,23 @@
 		student.setId(id);
 		student.setPassword(password);
 
-		dbHelper.insertStudent(student);
+		if(dbHelper.insertStudent(student)){
+
 		%>
 			<div class="container">
 		 	<div class="card-panel teal lighten-2 center-align">注册成功, 正在返回</div>
 			</div>
 		<%
+		}else{
+		%>
+		<div class="container">
+		 	<div class="card-panel teal lighten-2 center-align">注册失败, 正在返回</div>
+			</div>
+		<%
+		}
+
 	}
-	response.setHeader("refresh", "2; URL=login.htm");
+	response.setHeader("refresh", "2; URL=trylogin.jsp");
 
 
 	%>

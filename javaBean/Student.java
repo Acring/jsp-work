@@ -1,4 +1,5 @@
 package com.acring.pojo;
+import java.util.regex.*;
 
 public class Student{
 	private String id;
@@ -6,6 +7,7 @@ public class Student{
 	private String name;
 	private int age;
 	private String classes;
+	public int errorCode = 100;
 
 	public void setId(String id){
 		this.id = id;
@@ -39,6 +41,36 @@ public class Student{
 	}
 	public String getClasses(){
 		return this.classes;
+	}
+
+	public boolean checkId(){
+		String pattern = "^\\d{10}$";
+		if(this.id == null){
+			this.errorCode = 101;
+			System.out.println("null");
+			return false;
+		}
+		if(!Pattern.matches(pattern, this.id)){
+			System.out.println(this.id);	
+			this.errorCode = 101;
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	public boolean checkPassword(){
+		String pattern = "^\\w{6}$";
+		if(this.password == null){
+			this.errorCode = 102;
+			return false;
+		}
+		if(!Pattern.matches(pattern, this.password)){
+			this.errorCode = 102;
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 }

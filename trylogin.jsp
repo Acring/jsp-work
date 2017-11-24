@@ -1,3 +1,7 @@
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.util.*"%>
+<jsp:useBean id="student" scope="request" class="com.acring.pojo.Student"/>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,32 +13,6 @@
 	<script type="text/javascript">
 		function focusonId(){
 			frm.uid.focus();
-		}
-		function validate_id(id){
-			console.log(id.value);
-			let idReg = /^\d{10}$/;
-			return idReg.test(id.value);
-		}
-		function validate_password(password){
-			console.log(password.value);
-			let pwReg = /^[\d\w]{6}$/
-			return pwReg.test(password.value); 
-		}
-		function validate_form(thisfrom){
-			if(!validate_id(thisfrom.uid)){
-				frm.uid.focus();
-				frm.uid.className = "validate invalid";
-				return false;
-			}else{
-				frm.uid.className = "validate valid";
-			}
-			if(!validate_password(thisfrom.password)){
-				frm.password.focus();
-				frm.password.className = "validate invalid";
-				return false;
-			}else{
-				frm.password.className = "validate valid";
-			}
 		}
 	</script>
 	<style type="text/css">
@@ -68,6 +46,15 @@ background-size:100% 100%;
 }
 	</style>
 </head>
+<%
+	if(student.getId() == null){
+	student.setId("");
+	if(student.getPassword() == null){
+	student.setPassword("");
+}
+}
+
+%>
 <body onLoad="focusonId()">
 	<div class="container">
 		<h2 class="center-align">登录页面</h2>
@@ -75,14 +62,44 @@ background-size:100% 100%;
 			 <form id="frm" class="content z-depth-5 card-panel col s6 offset-s3" style="margin-top: 50px" action="login.jsp" method="post" onsubmit="return validate_form(this)">
 			 	<div class="row">
 				 	<div class="input-field col s6 offset-s3">
-				 		<input id="uid" type="text" name="id" class="valid">
+				 		<%
+
+				 		if(student.errorCode == 101){ // 学号有错误
+				 		%>
+				 		<input id="uid" type="text" name="id" class="validate invalid" value=<%=student.getId()%>>
 				 		<label for="uid" data-error="10位数字">学号</label>
-				 	</div>
+				 		<%
+				 		}
+				 		else if(student.errorCode == 201){
+				 		%>
+				 		<input id="uid" type="text" name="id" class="validate invalid" value=<%=student.getId()%>>
+				 		<label for="uid" data-error="学号或密码错误">学号</label>
+				 		<%
+				 		}
+				 		else{
+				 		%>
+				 		<input id="uid" type="text" name="id" class="validate valid" value=<%=student.getId()%>>
+				 		<label for="uid" data-error="10位数字">学号</label>
+				 		<%
+				 	}
+				 		%>
+				 		</div>
 			 	</div>
 			 	<div class="row">
 				 	<div class="input-field col s6 offset-s3">
-				 		<input id="password" name="password" type="password" class="valid">
+				 		<%
+				 		if(student.errorCode == 102){  // 密码格式有错误
+				 			%>
+				 		<input id="password" name="password" type="password" class="validate invalid" value=<%=student.getPassword()%>>
 				 		<label for="password" data-error="6位数字或字母">密码</label>
+				 		<%	
+				 		}else{
+				 		%>
+				 		<input id="password" name="password" type="password" class="validate valid" value=<%=student.getPassword()%>>
+				 		<label for="password" data-error="6位数字或字母">密码</label>
+				 		<%
+				 	}
+				 	%>
 				 	</div>
 			 	</div>
 			 	<div class="row">
@@ -94,8 +111,6 @@ background-size:100% 100%;
 			 			
 			 	</div>
 			 </form>
-			 
-
 		</div>
 	</div>
 </body>
